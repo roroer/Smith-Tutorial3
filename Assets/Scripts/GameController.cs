@@ -4,19 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GameController : MonoBehaviour
-{
-	public GameObject hazard;
+public class GameController : MonoBehaviour {
+	public GameObject[] hazards;
 	public Vector3 spawnValues;
 	public int hazardCount;
 	public float spawnWait;
 	public float startWait;
 	public float waveWait;
 
+	public int winScore = 100;
+
 	public Text scoreText;
 	public Text gameOverText;
 	public Text restartText;
-
+	public Text winText;
 
 	private bool gameOver;
 	private bool restart;
@@ -27,6 +28,7 @@ public class GameController : MonoBehaviour
 		gameOver = false;
 		restart = false;
 
+		winText.text = "";
 		restartText.text = "";
 		gameOverText.text = "";
 		score = 0;
@@ -36,7 +38,7 @@ public class GameController : MonoBehaviour
 
 	void Update() {
 		if (restart) {
-			if (Input.GetKeyDown(KeyCode.R)) {
+			if (Input.GetKeyDown(KeyCode.X)) {
 				SceneManager.LoadScene(0);
 			}
 		}
@@ -49,18 +51,19 @@ public class GameController : MonoBehaviour
 		yield return new WaitForSeconds(startWait);
 		while (true) {
 			for (int i = 0; i < hazardCount; i++) {
+				GameObject hazard = hazards[Random.Range(0, hazards.Length)];
 				Vector3 spawnPosition = new Vector3(Random.Range(-spawnValues.x, spawnValues.x), spawnValues.y, spawnValues.z);
 				Quaternion spawnRotation = Quaternion.identity;
 				Instantiate(hazard, spawnPosition, spawnRotation);
 				yield return new WaitForSeconds(spawnWait);
 			}
-			yield return new WaitForSeconds(waveWait);
-
 			if (gameOver) {
-				restartText.text = "Press R to Restart";
+				restartText.text = "Press X to Restart";
 				restart = true;
 				break;
 			}
+			yield return new WaitForSeconds(waveWait);
+
 		}
 	}
 
@@ -69,10 +72,19 @@ public class GameController : MonoBehaviour
 		UpdateScore();
 	}
 
-    void UpdateScore()
-    {
-		scoreText.text = "Score: " + score;
-    }
+    void UpdateScore() {
+		scoreText.text = "Points: " + score;
+		WinScore();
+	}
+
+	void WinScore() {
+		if (score >= winScore) {
+			winText.text = "You win! Game by Alex Smith";
+			restartText.text = "Press X to Restart";
+			gameOver = true;
+			restart = true;
+		}
+	}
 
 	public void GameOver() {
 		gameOverText.text = "Game Over!";
