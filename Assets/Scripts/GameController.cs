@@ -45,7 +45,10 @@ public class GameController : MonoBehaviour {
 		gameOver = false;
 		restart = false;
 
-		highScoreText.text = "High score:" + highScore.ToString();
+		highScoreText.text = "";
+		if (hardMode) {
+			highScoreText.text = "High score:" + highScore.ToString();
+		}
 		winText.text = "";
 		restartText.text = "";
 		gameOverText.text = "";
