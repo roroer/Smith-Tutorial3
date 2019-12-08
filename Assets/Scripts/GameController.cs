@@ -26,6 +26,7 @@ public class GameController : MonoBehaviour {
 	public Text restartText;
 	public Text winText;
 	public Text timerText;
+	public Text highScoreText;
 
 	public bool gameOver;
 	private bool restart;
@@ -34,6 +35,7 @@ public class GameController : MonoBehaviour {
 	public bool hardMode;
 
 	public int score;
+	public static int highScore = 100;
 	int timerT;
 
 
@@ -43,6 +45,7 @@ public class GameController : MonoBehaviour {
 		gameOver = false;
 		restart = false;
 
+		highScoreText.text = "High score:" + highScore.ToString();
 		winText.text = "";
 		restartText.text = "";
 		gameOverText.text = "";
@@ -134,6 +137,10 @@ public class GameController : MonoBehaviour {
 		gameOver = true;
 		restartText.text = "Press X to Restart";
 		restart = true;
+		if (highScore < score) {
+			highScore = score;
+			highScoreText.text = "High score:" + highScore.ToString();
+		}
 		audioSource.Stop();
 		audioSource.PlayOneShot(loseMusic);
 	}
